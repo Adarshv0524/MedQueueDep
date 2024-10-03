@@ -1,0 +1,219 @@
+/* Base Styles */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    background-color: #f0f0f0;
+    color: #333;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3 {
+    margin: 0;
+    padding: 0.5rem 0;
+}
+
+.navbar {
+    background-color: #4a90e2;
+    padding: 1rem;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 800; /* Adjusted z-index */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 2rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* Off-Canvas Navigation Styles */
+.off-canvas-nav {
+    position: fixed;
+    top: 0;
+    left: -250px; /* Hidden off-screen */
+    height: 100%;
+    width: 250px;
+    background-color: #4a90e2;
+    padding: 2rem;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+    transition: left 0.3s ease; /* Animation for slide effect */
+    z-index: 900; /* Ensure it appears above other elements */
+}
+
+.off-canvas-nav.active {
+    left: 0; /* Slide in */
+}
+
+.nav-links {
+    list-style-type: none;
+    padding: 0; /* Remove default padding */
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    display: block; /* Make the entire area clickable */
+    padding: 0.7rem 1.2rem;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+}
+
+.nav-links a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Dark Mode Toggle */
+.dark-mode-toggle {
+    cursor: pointer;
+}
+
+/* Hamburger Menu Styles */
+.hamburger {
+    display: flex; /* Show hamburger menu */
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.hamburger div {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    margin: 4px;
+    transition: all 0.3s ease;
+}
+
+/* Main Content */
+.main-content {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 20px auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Layout for Profile and Recent Activity */
+.profile-activity-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+.profile-section,
+.activity-section {
+    flex: 1;
+    min-width: 300px;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background: #fafafa;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.profile-section h3,
+.activity-section h3,
+.stats-section h3 {
+    border-bottom: 2px solid #4a90e2;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eaeaea;
+}
+
+ul li:last-child {
+    border-bottom: none;
+}
+
+.edit-profile-btn,
+.update-password-btn {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.edit-profile-btn:hover,
+.update-password-btn:hover {
+    background-color: #357ab8;
+    transform: translateY(-2px);
+}
+
+/* Health Stats Canvas */
+#activityChart {
+    margin: 20px 0;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+body.dark-mode .navbar {
+    background-color: #1e1e1e;
+}
+
+body.dark-mode .navbar a {
+    color: #ffffff;
+}
+
+body.dark-mode .main-content {
+    background-color: #1e1e1e;
+    color: #ffffff;
+}
+
+body.dark-mode .profile-section,
+body.dark-mode .activity-section,
+body.dark-mode .stats-section {
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+}
+
+body.dark-mode .profile-section h3,
+body.dark-mode .activity-section h3,
+body.dark-mode .stats-section h3 {
+    color: #ffffff;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+    .profile-activity-container {
+        flex-direction: column; /* Stack elements on smaller screens */
+    }
+
+    .navbar-container {
+        flex-direction: row; /* Ensure navbar elements are aligned */
+        justify-content: space-between; /* Space elements evenly */
+    }
+
+    .hamburger {
+        display: flex; /* Show hamburger menu */
+    }
+
+    .off-canvas-nav {
+        width: 200px; /* Adjust width for smaller screens */
+        color: #00494D;
+    }
+}

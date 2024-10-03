@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Services - Emergency Prediction</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">MedicalServices</div>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="hero">
+        <h1>Predict Emergency Medical Conditions in Real-Time</h1>
+        <p>Your trusted partner in managing health emergencies with AI-based solutions.</p>
+        <button class="btn" onclick="openForm()">Start Emergency Prediction</button>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services">
+        <h2>Our Services</h2>
+        <div class="services-container">
+            <div class="service-card">
+                <h3>Emergency Prediction</h3>
+                <p>Get real-time analysis of patient data to predict the urgency of medical care.</p>
+            </div>
+            <div class="service-card">
+                <h3>Health Monitoring</h3>
+                <p>Continuous monitoring of patient vitals for preventive measures.</p>
+            </div>
+            <div class="service-card">
+                <h3>Medical History Analysis</h3>
+                <p>Analyze medical history and suggest treatments or preventive actions.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Form Section (Hidden by default) -->
+    <section id="form-section" class="hidden">
+        <h2>Emergency Prediction Form</h2>
+        <form action="/predict" method="POST">
+            <label for="patientName">Patient Name</label>
+            <input type="text" id="patientName" name="patientName" required>
+
+            <label for="vitals">Vitals</label>
+            <input type="text" id="vitals" name="vitals" required placeholder="e.g., Blood Pressure, Heart Rate">
+
+            <label for="medicalHistory">Medical History</label>
+            <textarea id="medicalHistory" name="medicalHistory" required></textarea>
+
+            <label for="otherData">Other Data</label>
+            <textarea id="otherData" name="otherData"></textarea>
+
+            <button type="submit" class="btn">Submit Data for Prediction</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 MedicalServices. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        function openForm() {
+            document.getElementById('form-section').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

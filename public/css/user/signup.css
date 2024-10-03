@@ -1,0 +1,169 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif; /* Modern font */
+    background-color: #e6f1f2; /* Light and calming background */
+    color: #2c3e50; /* Dark text for readability */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #1c1e22; /* Darker background for dark mode */
+    color: #eaeaea; /* Light text for better contrast */
+}
+
+/* Dark Mode Toggle Button */
+.dark-mode-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000; /* Keep above other elements */
+}
+
+#darkModeSwitch {
+    width: 30px; /* Small toggle size */
+    height: 30px; /* Small toggle size */
+    background-color: #fff; /* White background for toggle */
+    border-radius: 50%; /* Circular shape */
+    border: 2px solid #3498db; /* Blue border */
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+#darkModeSwitch:hover {
+    background-color: #e0e0e0; /* Slight darkening on hover */
+    transform: scale(1.1); /* Slight enlargement */
+}
+
+/* Container */
+.container {
+    background-color: white; /* Clean white background */
+    border-radius: 12px; /* Slightly more rounded corners */
+    padding: 40px 30px; /* Padding for content spacing */
+    width: 95%;
+    max-width: 450px; /* Maximum width */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Soft shadow for depth */
+    transition: box-shadow 0.3s; /* Shadow transition for effect */
+}
+
+/* Hover Effect on Container */
+.container:hover {
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); /* Deepens shadow on hover */
+}
+
+/* Heading */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 28px; /* Larger heading size */
+    color: #3498db; /* Calming blue color */
+    font-weight: normal; /* Light font weight for sophistication */
+}
+
+/* Error Message */
+.error {
+    color: #e74c3c; /* Error color */
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 14px; /* Slightly larger font */
+}
+
+/* Form Group */
+.form-group {
+    margin-bottom: 20px; /* Space between form groups */
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 16px; /* Larger label font */
+}
+
+/* Input Fields */
+.form-group input {
+    width: 100%;
+    padding: 12px; /* Increased padding for comfort */
+    border: 2px solid #bdc3c7; /* Light gray border */
+    border-radius: 6px; /* Rounded corners */
+    font-size: 16px; /* Standard input font size */
+    transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transition for focus */
+}
+
+/* Input Focus Effect */
+.form-group input:focus {
+    border-color: #3498db; /* Highlight color */
+    box-shadow: 0 0 8px rgba(52, 152, 219, 0.5); /* Soft blue glow */
+    outline: none; /* No outline */
+}
+
+/* Button Styles */
+button {
+    background-color: #3498db; /* Calming blue */
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 6px; /* Rounded corners */
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.3s; /* Smooth transition */
+}
+
+button:hover {
+    background-color: #2980b9; /* Darker blue on hover */
+    transform: scale(1.05); /* Slight enlargement */
+}
+
+/* Redirect Link */
+.redirect {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px; /* Standard font size for readability */
+}
+
+.redirect a {
+    color: #3498db; /* Link color */
+    text-decoration: none;
+    transition: text-decoration 0.3s; /* Transition for hover */
+}
+
+.redirect a:hover {
+    text-decoration: underline; /* Underline on hover */
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 12px; /* Smaller font for footer */
+}
+
+/* Responsive Styles */
+@media (max-width: 600px) {
+    .container {
+        width: 90%; /* Full width on small screens */
+        padding: 30px; /* Less padding for small screens */
+    }
+
+    button {
+        padding: 12px; /* Adjust button padding */
+        font-size: 18px; /* Bigger font for better readability */
+    }
+
+    h1 {
+        font-size: 24px; /* Adjust heading size */
+    }
+}

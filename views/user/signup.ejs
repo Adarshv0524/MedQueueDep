@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="../css/user/signup.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="dark-mode-toggle">
+        <button id="darkModeSwitch">🌙</button>
+    </div>
+    <div class="container">
+        <h1>🌌 Join Us</h1>
+        <% if (error) { %>
+            <div class="error"><%= error %></div>
+        <% } %>
+        <form id="signupForm" action="/signup" method="POST">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <div class="input-container">
+                    <i class="fas fa-user"></i>
+                    <input type="text" name="username" id="username" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <div class="input-container">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="password" id="password" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="firstName">First Name:</label>
+                <div class="input-container">
+                    <i class="fas fa-user"></i>
+                    <input type="text" name="firstName" id="firstName" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lastName">Last Name:</label>
+                <div class="input-container">
+                    <i class="fas fa-user"></i>
+                    <input type="text" name="lastName" id="lastName" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <div class="input-container">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" name="email" id="email" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone:</label>
+                <div class="input-container">
+                    <i class="fas fa-phone"></i>
+                    <input type="tel" name="phone" id="phone" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <div class="input-container">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <input type="text" name="address" id="address" required>
+                </div>
+            </div>
+            <div>
+                <button type="submit">🚀 Create Account</button>
+            </div>
+            <div class="redirect">
+                <p>Already have an account? <a href="/login">Login here</a></p>
+            </div>
+        </form>
+        <div class="footer">
+            <p>© 2024 Your Company. All Rights Reserved.</p>
+        </div>
+    </div>
+    <script src="../js/user/signup.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</body>
+</html>

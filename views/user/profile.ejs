@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="/styles.css"> <!-- Link to your CSS -->
+</head>
+<body>
+    <div class="container">
+        <h1>User Profile</h1>
+
+        <!-- Success Message -->
+        <% if (successMessage) { %>
+            <div class="success"><%= successMessage %></div>
+        <% } %>
+
+        <!-- User Details Section -->
+        <h3>Your Profile Details:</h3>
+        <ul>
+            <li><strong>Username:</strong> <%= user.username %></li>
+            <li><strong>First Name:</strong> <%= profile.first_name %></li>
+            <li><strong>Last Name:</strong> <%= profile.last_name %></li>
+            <li><strong>Email:</strong> <%= profile.email %></li>
+            <li><strong>Phone:</strong> <%= profile.phone %></li>
+            <li><strong>Address:</strong> <%= profile.address %></li>
+        </ul>
+
+        <!-- Edit Profile Form -->
+        <h3>Edit Profile:</h3>
+        <form action="/profile" method="POST">
+            <label for="firstName">First Name:</label>
+            <input type="text" name="firstName" value="<%= profile.first_name %>" required>
+            
+            <label for="lastName">Last Name:</label>
+            <input type="text" name="lastName" value="<%= profile.last_name %>" required>
+            
+            <label for="email">Email:</label>
+            <input type="email" name="email" value="<%= profile.email %>" required>
+            
+            <label for="phone">Phone:</label>
+            <input type="text" name="phone" value="<%= profile.phone %>" required>
+            
+            <label for="address">Address:</label>
+            <input type="text" name="address" value="<%= profile.address %>" required>
+
+            <button type="submit">Update Profile</button>
+        </form>
+
+        <!-- Update Password Link -->
+        <h3>Update Your Password:</h3>
+        <p>If you want to update your password, click the button below:</p>
+        <a href="/update-password" class="btn">Update Password</a>
+
+        <!-- Activity Logs Section -->
+        <h3>Your Activity Logs:</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (recentActivity.length > 0) { %>
+                    <% recentActivity.forEach(activity => { %>
+                        <tr>
+                            <td><%= activity.action %></td>
+                            <td><%= new Date(activity.timestamp).toLocaleString() %></td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="2">No activity logs available.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+
+        <a href="/dashboard" class="btn">Back to Dashboard</a>
+    </div>
+</body>
+</html>
