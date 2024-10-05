@@ -593,34 +593,26 @@ app.get('/admin/logout', isAdminAuthenticated, async (req, res) => {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Catch 404 and forward to error handler
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+// Middleware for handling 404 Not Found
 app.use((req, res, next) => {
-  const err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+  res.status(404).render('error', { 
+      message: 'Oops! Page not found', 
+      errorCode: '404' 
+  });
 });
 
-// Error handling middleware
+// Global error handler (optional for other errors)
 app.use((err, req, res, next) => {
-  console.error(err.stack);  // Log error for debugging
-  
-  // Handle as usual
-  const isDevelopment = req.app.get('env') === 'development';
-  res.locals.message = err.message;
-  res.locals.error = isDevelopment ? err : {};
-
-  res.status(err.status || 500);
-  res.render('error', { message: err.message, error: isDevelopment ? err : {} });
+  console.error(err.stack);
+  res.status(500).render('error', { 
+      message: 'Internal Server Error', 
+      errorCode: '500' 
+  });
 });
 
 
 
 
-
-
-app.use((req, res) => {
-  res.status(404).render('404'); // Create a 404.ejs file to display custom error messages
-});
 
 // =================================================================
 // Server listning
