@@ -1,77 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical Services - Emergency Prediction</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <title>Medical Solutions</title>
+    <link rel="stylesheet" href="../css/style.css"> <!-- CSS file for styling -->
+    <script src="../js/script.js" defer></script> <!-- JS file for functionality -->
 </head>
+
 <body>
-    <header>
-        <nav>
-            <div class="logo">MedicalServices</div>
-            <ul>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <h1>Medical Solutions</h1>
+            </div>
+            <!-- Hamburger Menu -->
+            <div id="hamburgerToggle" class="hamburger" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <ul class="nav-links" id="navLinks">
                 <li><a href="/">Home</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#about">About Us</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="/consultation">Book Consultation</a></li>
+                <!-- Render only if the user is logged in -->
+                <% if (firstName) { %>
+                    <li><a href="/dashboard">Health Dashboard</a></li>
+                    <li><a href="/resources">Patient Education</a></li>
+                    <li><a href="/emergency-locator">Emergency Locator</a></li>
+                <% } %>
+                <li class="profile-icon" id="profile-icon">
+                    <a href="#" id="profileMenuToggle" aria-haspopup="true" aria-expanded="false">
+                        <img src="../images/logo.png" alt="Profile">
+                    </a>
+                    <div class="profile-menu" id="profileMenu">
+                        <% if (firstName) { %>
+                            <p>Hello, <%= firstName %>!</p>
+                            <a href="/profile">Profile</a>
+                            <a href="/logout">Logout</a>
+                        <% } else { %>
+                            <a href="/login">Login</a>
+                        <% } %>
+                    </div>
+                </li>
             </ul>
-        </nav>
-    </header>
-
-    <section id="hero">
-        <h1>Predict Emergency Medical Conditions in Real-Time</h1>
-        <p>Your trusted partner in managing health emergencies with AI-based solutions.</p>
-        <button class="btn" onclick="openForm()">Start Emergency Prediction</button>
-    </section>
-
-    <!-- Services Section -->
-    <section id="services">
-        <h2>Our Services</h2>
-        <div class="services-container">
-            <div class="service-card">
-                <h3>Emergency Prediction</h3>
-                <p>Get real-time analysis of patient data to predict the urgency of medical care.</p>
-            </div>
-            <div class="service-card">
-                <h3>Health Monitoring</h3>
-                <p>Continuous monitoring of patient vitals for preventive measures.</p>
-            </div>
-            <div class="service-card">
-                <h3>Medical History Analysis</h3>
-                <p>Analyze medical history and suggest treatments or preventive actions.</p>
-            </div>
         </div>
-    </section>
+    </nav>
 
-    <!-- Form Section (Hidden by default) -->
-    <section id="form-section" class="hidden">
-        <h2>Emergency Prediction Form</h2>
-        <form action="/predict" method="POST">
-            <label for="patientName">Patient Name</label>
-            <input type="text" id="patientName" name="patientName" required>
+    <!-- Main Content -->
+    <main>
+        <header class="hero-section">
+            <h2>Welcome to Your Health Hub</h2>
+            <p>Your health is our priority. Explore our services below for comprehensive medical solutions.</p>
+            <button class="cta-button"><a href="/consultation">Get Started</a></button>
+        </header>
 
-            <label for="vitals">Vitals</label>
-            <input type="text" id="vitals" name="vitals" required placeholder="e.g., Blood Pressure, Heart Rate">
+        <section class="feature-section">
+            <div class="feature" id="emergency-score-prediction">
+                <div class="feature-background"></div>
+                <h3>Emergency Score Prediction</h3>
+                <p>Input your health parameters to receive an emergency score indicating your health risk level.</p>
+                <form action="/predict-score" method="POST" class="feature-form">
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" name="age" placeholder="Enter your age" required>
+                    <label for="symptoms">Symptoms:</label>
+                    <input type="text" id="symptoms" name="symptoms" placeholder="Describe your symptoms" required>
+                    <button type="submit" class="submit-button">Get Emergency Score</button>
+                </form>
+            </div>
+        
+            <div class="feature" id="consultation-booking">
+                <div class="feature-background"></div>
+                <h3>Book a Medical Consultation</h3>
+                <p>Schedule an appointment with our healthcare professionals for timely assistance.</p>
+                <button class="cta-button"><a href="/consultation">Book Now</a></button>
+            </div>
+        
+            <!-- Only show this feature if user is logged in -->
+            <% if (firstName) { %>
+            <div class="feature" id="health-dashboard">
+                <div class="feature-background"></div>
+                <h3>Your Personal Health Dashboard</h3>
+                <p>Track your health metrics, appointments, and medication schedules all in one place.</p>
+                <button class="cta-button"><a href="/dashboard">View Dashboard</a></button>
+            </div>
+            <% } %>
+        
+            <div class="feature" id="patient-education">
+                <div class="feature-background"></div>
+                <h3>Patient Education Resources</h3>
+                <p>Access a library of articles and videos that educate you about various health conditions.</p>
+                <button class="cta-button"><a href="/resources">Explore Resources</a></button>
+            </div>
+        
+            <div class="feature" id="emergency-locator">
+                <div class="feature-background"></div>
+                <h3>Emergency Resources Locator</h3>
+                <p>Quickly find nearby hospitals, clinics, and pharmacies in case of emergencies.</p>
+                <button class="cta-button"><a href="/emergency-locator">Locate Resources</a></button>
+            </div>
+        </section>
+        
+    </main>
 
-            <label for="medicalHistory">Medical History</label>
-            <textarea id="medicalHistory" name="medicalHistory" required></textarea>
-
-            <label for="otherData">Other Data</label>
-            <textarea id="otherData" name="otherData"></textarea>
-
-            <button type="submit" class="btn">Submit Data for Prediction</button>
-        </form>
-    </section>
-
+    <!-- Footer -->
     <footer>
-        <p>&copy; 2024 MedicalServices. All Rights Reserved.</p>
+        <p>&copy; 2024 Medical Solutions. All rights reserved.</p>
+        <ul class="footer-links">
+            <li><a href="/privacy-policy">Privacy Policy</a></li>
+            <li><a href="/terms-of-service">Terms of Service</a></li>
+        </ul>
     </footer>
 
-    <script>
-        function openForm() {
-            document.getElementById('form-section').classList.remove('hidden');
-        }
-    </script>
+    <script src="../js/index.js"></script>
+    
 </body>
+
 </html>

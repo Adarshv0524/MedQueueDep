@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+    <header>
+        <h1>Admin Dashboard</h1>
+        <% if (admin) { %>
+            <p>Welcome, <%= admin.first_name %>! You are logged in.</p>
+        <% } else { %>
+            <p>Welcome, Admin!</p>
+        <% } %>
+        <nav>
+            <ul>
+                <li><a href="/admin/dashboard">Dashboard</a></li>
+                <li><a href="/admin/manage-users">Manage Users</a></li>
+                <li><a href="/admin/activity-logs">View Logs</a></li>
+                <li><a href="/admin/settings">Settings</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Admin Profile</h2>
+            <% if (admin) { %>
+                <p><strong>Username:</strong> <%= admin.username %></p>
+                <p><strong>Email:</strong> <%= admin.email %></p>
+                <p><strong>Phone:</strong> <%= admin.phone %></p>
+                <p><strong>Address:</strong> <%= admin.address %></p>
+            <% } else { %>
+                <p>No admin profile found.</p>
+            <% } %>
+        </section>
+
+        <section>
+            <h2>Recent Activities</h2>
+            <% if (activities && activities.length > 0) { %>
+                <ul>
+                    <% activities.forEach(activity => { %>
+                        <li><%= activity.action %> - <%= new Date(activity.timestamp).toLocaleString() %></li>
+                    <% }) %>
+                </ul>
+            <% } else { %>
+                <p>No recent activities logged.</p>
+            <% } %>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Medical Solutions. All rights reserved.</p>
+    </footer>
+</body>
+</html>
