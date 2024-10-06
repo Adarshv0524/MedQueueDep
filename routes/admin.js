@@ -8,12 +8,12 @@ const router = express.Router();
 
 import session from 'express-session';
 
+
 router.use(session({
-    secret: 'your-secret-key', // Replace with your secret key
+    secret: process.env.SESSION_SECRET, // Use the secret key from the .env file
     resave: false,
     saveUninitialized: true,
 }));
-
 
 
 
