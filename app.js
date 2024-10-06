@@ -439,9 +439,12 @@ app.get('/admin/dashboard', isAdminAuthenticated, async (req, res) => {
     // Fetch recent activity logs for the admin
     const [activities] = await pool.query('SELECT * FROM activity_logs WHERE user_id = ? ORDER BY timestamp DESC', [adminId]);
 
-    res.render('admin/dashboard', {
+    const [users] = await pool.query('SELECT * FROM users');
+    
+    res.render('admin/admin', {
       admin: adminProfile[0], // Pass admin profile data to the template
-      activities // Pass admin activities to the template
+      activities, // Pass admin activities to the template
+      users
     });
   } catch (err) {
     console.error(err);
@@ -554,6 +557,25 @@ app.get('/admin/activity-logs', isAdminAuthenticated, async (req, res) => {
       res.redirect('/admin/dashboard');
   }
 });
+
+// Route for sesarc
+app.get('/admin/manage-users/serch' , isAdminAuthenticated , async (req , res) => {
+  const {query} = req.query;
+  try {
+    const searchQuery  = `%${query}%` ; // user pattern mathch for sql
+    const users = await pool.query(
+      'SELECT * FROM users WHERE username LIKE ? OR id LIKE ?',
+      [searchQuery, searchQuery]
+    );
+    res.render('admin/manage-users' , {users});
+  } catch (err) {
+    console.error(err);
+    req.sesssion.error = 'Error searching users';
+    res.redirect('/admin/manage-users');
+  }
+})
+
+
 
 
 // Admin logout route

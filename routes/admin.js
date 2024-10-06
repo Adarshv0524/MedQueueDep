@@ -1,179 +1,244 @@
 import express from 'express';
-import bcrypt from 'bcryptjs';
-import mysql from 'mysql2/promise'; // Ensure you have mysql2 installed
-import { isAuthenticated } from './middlewares/authMiddleware.js'; // Middleware to check if the user is authenticated
-import { logAdminActivity } from './utils/logging.js'; // Log admin activity
+import bcrypt from 'bcrypt'; // Ensure you have bcrypt installed
+import db from '../db.js'; // Update the import based on your db file location
+import { isAdminAuthenticated } from '../middleware/auth.js'; // Update as necessary
+import { logUserActivity} from '../utils/activityLogger.js';
 
 const router = express.Router();
 
-// MySQL connection pool setup
-const pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
-});
 
-// Admin Dashboard - Fetches user count and recent activity logs
-router.get('/dashboard', isAuthenticated, async (req, res) => {
+
+
+
+
+
+
+
+// =================================================================
+// Admin functionalities
+// =================================================================
+
+// ----------------------------------------------------------------
+// Admin login route (GET)
+// ----------------------------------------------------------------
+
+router.get('/admin', (req, res) => {
+    const error = req.session.error || null; // Pass error variable to the view if it exists
+    req.session.error = null; // Clear the error after displaying
+    res.render('admin/login', { error }); // Render admin login view
+  });
+  
+  // ----------------------------------------------------------------
+  // Admin login route (POST)
+  // ----------------------------------------------------------------
+  
+  router.post('/admin', async (req, res) => {
+    const { username, password } = req.body;
+  
     try {
-        // Fetch user count
-        const [userCount] = await pool.query('SELECT COUNT(*) AS count FROM users');
-        
-        // Fetch recent activity logs
-        const [activityLogs] = await pool.query('SELECT * FROM activity_logs ORDER BY timestamp DESC LIMIT 10');
-
-        res.render('admin/dashboard', {
-            userCount: userCount[0].count,
-            recentActivity: activityLogs
-        });
+        // Find admin in the database
+        const [admin] = await db.query('SELECT * FROM admins WHERE username = ?', [username]);
+        if (admin.length === 0) {
+            req.session.error = 'Invalid username or password'; // Set error in session
+            return res.redirect('/admin'); // Redirect to admin login page
+        }
+  
+        // Compare passwords
+        const isMatch = await bcrypt.compare(password, admin[0].password);
+        if (password === admin[0].password) {
+            // Set session data for admin
+            req.session.adminId = admin[0].id;
+  
+            // Log admin login activity
+            await logUserActivity(admin[0].id, 'Admin logged in');
+  
+            res.redirect('/admin/dashboard'); // Redirect to admin dashboard
+        } else {
+            req.session.error = 'Invalid username or password'; // Set error in session
+            res.redirect('/admin'); // Redirect to admin login page
+        }
     } catch (err) {
         console.error(err);
         res.status(500).send('Server error');
     }
-});
-
-// View all users
-router.get('/users', isAuthenticated, async (req, res) => {
+  });
+  
+  
+  // -------------------------------------------------------------------------
+  // Admin dashboard route (GET)
+  // -------------------------------------------------------------------------
+  
+  // Admin dashboard route (GET)
+  router.get('/admin/dashboard', isAdminAuthenticated, async (req, res) => {
     try {
-        const [users] = await pool.query('SELECT * FROM users');
-        res.render('admin/users', { users });
+      const adminId = req.session.adminId;
+      
+      // Fetch admin profile information
+      const [adminProfile] = await db.query('SELECT * FROM admins WHERE id = ?', [adminId]);
+  
+      // Fetch recent activity logs for the admin
+      const [activities] = await db.query('SELECT * FROM activity_logs WHERE user_id = ? ORDER BY timestamp DESC', [adminId]);
+  
+      const [users] = await db.query('SELECT * FROM users');
+      
+      res.render('admin/admin', {
+        admin: adminProfile[0], // Pass admin profile data to the template
+        activities, // Pass admin activities to the template
+        users
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Server error');
+    }
+  });
+  
+  
+  
+  // Additional admin functionalities routes
+  // For example, manage users
+  router.get('/admin/manage-users', isAdminAuthenticated, async (req, res) => {
+    try {
+        const [users] = await db.query('SELECT * FROM users'); // Fetch all users
+        res.render('admin/manage-users', { users }); // Render manage users view with user data
     } catch (err) {
         console.error(err);
         res.status(500).send('Server error');
     }
-});
-
-// Edit user information (GET and POST)
-router.get('/users/:id/edit', isAuthenticated, async (req, res) => {
+  });
+  
+  // Functionality to delete a user (example)
+  router.post('/admin/delete-user/:id', isAdminAuthenticated, async (req, res) => {
     const userId = req.params.id;
     try {
-        const [user] = await pool.query('SELECT * FROM users WHERE id = ?', [userId]);
-        res.render('admin/edit-user', { user: user[0] });
+      // Check if user exists
+      const [existingUser] = await db.query('SELECT * FROM users WHERE id = ?', [userId]);
+      if (existingUser.length === 0) {
+        req.session.error = 'User does not exist';
+        return res.redirect('/admin/manage-users');
+      }
+  
+      // Attempt to delete the user
+      await db.query('DELETE FROM users WHERE id = ?', [userId]);
+      await logUserActivity(req.session.adminId, `Deleted user with ID: ${userId}`);
+      res.redirect('/admin/manage-users');
     } catch (err) {
-        console.error(err);
-        res.status(500).send('Server error');
+      console.error(err);
+      req.session.error = 'Error deleting user';
+      res.redirect('/admin/manage-users');
     }
-});
-
-router.post('/users/:id/edit', isAuthenticated, async (req, res) => {
-    const userId = req.params.id;
-    const { username, email, phone } = req.body;
-
-    try {
-        await pool.query('UPDATE users SET username = ?, email = ?, phone = ? WHERE id = ?', [username, email, phone, userId]);
-        await logAdminActivity(req.session.adminId, `Edited user information for user ID ${userId}`);
-        res.redirect('/admin/users');
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Server error');
-    }
-});
-
-// Delete a user
-router.post('/users/:id/delete', isAuthenticated, async (req, res) => {
+  });
+  
+  
+  // GET route for updating user information
+  router.get('/admin/update-user/:id', isAdminAuthenticated, async (req, res) => {
     const userId = req.params.id;
     try {
-        await pool.query('DELETE FROM users WHERE id = ?', [userId]);
-        await logAdminActivity(req.session.adminId, `Deleted user ID ${userId}`);
-        res.redirect('/admin/users');
+        const [user] = await db.query('SELECT * FROM users WHERE id = ?', [userId]);
+        const [profile] = await db.query('SELECT * FROM user_profiles WHERE user_id = ?', [userId]);
+  
+        if (user.length === 0 || profile.length === 0) {
+            req.session.error = 'User not found';
+            return res.redirect('/admin/manage-users');
+        }
+  
+        res.render('admin/update-user', { user: user[0], profile: profile[0] });
     } catch (err) {
         console.error(err);
-        res.status(500).send('Server error');
+        req.session.error = 'Error fetching user information';
+        res.redirect('/admin/manage-users');
     }
-});
-
-// Reset user password
-router.post('/users/:id/reset-password', isAuthenticated, async (req, res) => {
+  });
+  
+  // POST route for updating user information
+  router.post('/admin/update-user/:id', isAdminAuthenticated, async (req, res) => {
+    const userId = req.params.id;
+    const { username, firstName, lastName, email, phone, address } = req.body;
+    try {
+        await db.query('UPDATE users SET username = ? WHERE id = ?', [username, userId]);
+        await db.query('UPDATE user_profiles SET first_name = ?, last_name = ?, email = ?, phone = ?, address = ? WHERE user_id = ?',
+            [firstName, lastName, email, phone, address, userId]);
+  
+        await logUserActivity(req.session.adminId, `Updated user with ID: ${userId}`);
+        res.redirect('/admin/manage-users');
+    } catch (err) {
+        console.error(err);
+        req.session.error = 'Error updating user information';
+        res.redirect(`/admin/update-user/${userId}`);
+    }
+  });
+  
+  
+  // POST route for resetting user password
+  router.post('/admin/reset-password/:id', isAdminAuthenticated, async (req, res) => {
     const userId = req.params.id;
     const { newPassword } = req.body;
-
     try {
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
-        await pool.query('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, userId]);
-        await logAdminActivity(req.session.adminId, `Reset password for user ID ${userId}`);
-        res.redirect('/admin/users');
+        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+        await db.query('UPDATE users SET password = ? WHERE id = ?', [hashedNewPassword, userId]);
+  
+        await logUserActivity(req.session.adminId, `Reset password for user with ID: ${userId}`);
+        res.redirect('/admin/manage-users');
     } catch (err) {
         console.error(err);
-        res.status(500).send('Server error');
+        req.session.error = 'Error resetting password';
+        res.redirect(`/admin/manage-users`);
     }
-});
-
-// View all activity logs
-router.get('/activity-logs', isAuthenticated, async (req, res) => {
+  });
+  
+  
+  // Route to view activity logs
+  router.get('/admin/activity-logs', isAdminAuthenticated, async (req, res) => {
     try {
-        const [logs] = await pool.query('SELECT * FROM activity_logs ORDER BY timestamp DESC');
-        res.render('admin/activity-logs', { logs });
+        const [activityLogs] = await db.query('SELECT * FROM activity_logs ORDER BY timestamp DESC');
+        res.render('admin/activity-logs', { activityLogs });
     } catch (err) {
         console.error(err);
-        res.status(500).send('Server error');
+        req.session.error = 'Error fetching activity logs';
+        res.redirect('/admin/dashboard');
     }
-});
-
-// Delete an activity log
-router.post('/activity-logs/:id/delete', isAuthenticated, async (req, res) => {
-    const logId = req.params.id;
+  });
+  
+  // Route for sesarc
+  router.get('/admin/manage-users/serch' , isAdminAuthenticated , async (req , res) => {
+    const {query} = req.query;
     try {
-        await pool.query('DELETE FROM activity_logs WHERE id = ?', [logId]);
-        await logAdminActivity(req.session.adminId, `Deleted activity log ID ${logId}`);
-        res.redirect('/admin/activity-logs');
+      const searchQuery  = `%${query}%` ; // user pattern mathch for sql
+      const users = await db.query(
+        'SELECT * FROM users WHERE username LIKE ? OR id LIKE ?',
+        [searchQuery, searchQuery]
+      );
+      res.render('admin/manage-users' , {users});
     } catch (err) {
-        console.error(err);
-        res.status(500).send('Server error');
+      console.error(err);
+      req.sesssion.error = 'Error searching users';
+      res.redirect('/admin/manage-users');
     }
-});
-
-// Block/Unblock user
-router.post('/users/:id/block-unblock', isAuthenticated, async (req, res) => {
-    const userId = req.params.id;
-    const { action } = req.body; // Action: 'block' or 'unblock'
-
-    try {
-        const status = action === 'block' ? 'blocked' : 'active';
-        await pool.query('UPDATE users SET status = ? WHERE id = ?', [status, userId]);
-        await logAdminActivity(req.session.adminId, `${action === 'block' ? 'Blocked' : 'Unblocked'} user ID ${userId}`);
-        res.redirect('/admin/users');
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Server error');
+  })
+  
+  
+  
+  
+  // Admin logout route
+  router.get('/admin/logout', isAdminAuthenticated, async (req, res) => {
+    const adminId = req.session.adminId;
+  
+    if (adminId) {
+      // Log admin logout activity
+      await logUserActivity(adminId, 'Admin logged out', req);
     }
-});
+  
+    // Destroy the admin session
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('Error destroying session:', err);
+        return res.status(500).send('Error logging out');
+      }
+  
+      // Redirect to admin login page after successful logout
+      res.redirect('/admin');
+    });
+  });
 
-// View system settings
-router.get('/system-settings', isAuthenticated, async (req, res) => {
-    try {
-        const settings = {
-            host: process.env.DB_HOST,
-            user: process.env.DB_USER,
-            database: process.env.DB_NAME
-        };
-        res.render('admin/system-settings', { settings });
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Server error');
-    }
-});
 
-// Update system settings
-router.post('/system-settings', isAuthenticated, async (req, res) => {
-    const { dbHost, dbUser, dbPassword, dbName } = req.body;
-
-    try {
-        // Update environment variables (you'll need to handle saving the updated env vars securely)
-        process.env.DB_HOST = dbHost;
-        process.env.DB_USER = dbUser;
-        process.env.DB_PASSWORD = dbPassword;
-        process.env.DB_NAME = dbName;
-
-        await logAdminActivity(req.session.adminId, 'Updated system settings');
-        res.redirect('/admin/system-settings');
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Server error');
-    }
-});
-
+// Export the router
 export default router;
