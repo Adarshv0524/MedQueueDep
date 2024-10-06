@@ -439,9 +439,12 @@ app.get('/admin/dashboard', isAdminAuthenticated, async (req, res) => {
     // Fetch recent activity logs for the admin
     const [activities] = await pool.query('SELECT * FROM activity_logs WHERE user_id = ? ORDER BY timestamp DESC', [adminId]);
 
-    res.render('admin/dashboard', {
+    const [users] = await pool.query('SELECT * FROM users');
+    
+    res.render('admin/admin', {
       admin: adminProfile[0], // Pass admin profile data to the template
-      activities // Pass admin activities to the template
+      activities, // Pass admin activities to the template
+      users
     });
   } catch (err) {
     console.error(err);
@@ -554,6 +557,47 @@ app.get('/admin/activity-logs', isAdminAuthenticated, async (req, res) => {
       res.redirect('/admin/dashboard');
   }
 });
+
+
+app.get('/admin/manage-users/search', isAdminAuthenticated, async (req, res) => {
+  const { query } = req.query;
+  try {
+      const searchQuery = `%${query}%`; // Pattern matching for SQL
+      const users = await pool.query(
+          'SELECT * FROM users WHERE username LIKE ? OR id LIKE ?',
+          [searchQuery, searchQuery]
+      );
+      res.render('admin/manage-users', { users });
+  } catch (err) {
+      console.error(err);
+      req.session.error = 'Error searching users';
+      res.redirect('/admin/manage-users');
+  }
+});
+
+// Catch-all route should come after specific routes like search
+app.use((req, res) => {
+  res.status(404).render('404'); // Render 404 page
+});
+
+
+app.get('/admin/view-user/:id', isAdminAuthenticated, async (req, res) => {
+  const userId = req.params.id;
+  try {
+      const [user] = await pool.query('SELECT * FROM users WHERE id = ?', [userId]);
+      if (user.length > 0) {
+          res.render('admin/view-user', { user: user[0] });
+      } else {
+          req.session.error = 'User not found';
+          res.redirect('/admin/manage-users');
+      }
+  } catch (err) {
+      console.error(err);
+      req.session.error = 'Error fetching user details';
+      res.redirect('/admin/manage-users');
+  }
+});
+
 
 
 // Admin logout route

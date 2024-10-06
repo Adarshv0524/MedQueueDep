@@ -4,55 +4,190 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/styles.css"> <!-- Link to your CSS file -->
 </head>
 <body>
     <header>
         <h1>Admin Dashboard</h1>
-        <% if (admin) { %>
-            <p>Welcome, <%= admin.first_name %>! You are logged in.</p>
-        <% } else { %>
-            <p>Welcome, Admin!</p>
-        <% } %>
         <nav>
             <ul>
                 <li><a href="/admin/dashboard">Dashboard</a></li>
                 <li><a href="/admin/manage-users">Manage Users</a></li>
-                <li><a href="/admin/activity-logs">View Logs</a></li>
-                <li><a href="/admin/settings">Settings</a></li>
-                <li><a href="/logout">Logout</a></li>
+                <li><a href="/admin/activity-logs">Activity Logs</a></li>
+                <li><a href="/admin/logout">Logout</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
-        <section>
-            <h2>Admin Profile</h2>
-            <% if (admin) { %>
-                <p><strong>Username:</strong> <%= admin.username %></p>
-                <p><strong>Email:</strong> <%= admin.email %></p>
-                <p><strong>Phone:</strong> <%= admin.phone %></p>
-                <p><strong>Address:</strong> <%= admin.address %></p>
-            <% } else { %>
-                <p>No admin profile found.</p>
+        <h2>Welcome, <%= admin.username %>!</h2> <!-- Display the admin's username -->
+
+        <!-- Notification Area -->
+        <div id="notification">
+            <% if (error) { %>
+                <div class="error"><%= error %></div>
             <% } %>
+            <% if (successMessage) { %>
+                <div class="success"><%= successMessage %></div>
+            <% } %>
+        </div>
+
+        <!-- Overview Section -->
+        <section id="overview">
+            <h3>Overview</h3>
+            <p>Total Users: <%= users.length %></p>
+            <p>Total Activity Logs: <%= activities.length %></p>
         </section>
 
-        <section>
-            <h2>Recent Activities</h2>
-            <% if (activities && activities.length > 0) { %>
-                <ul>
-                    <% activities.forEach(activity => { %>
-                        <li><%= activity.action %> - <%= new Date(activity.timestamp).toLocaleString() %></li>
-                    <% }) %>
-                </ul>
-            <% } else { %>
-                <p>No recent activities logged.</p>
-            <% } %>
+        <!-- Activity Logs Section -->
+        <section id="activity-logs">
+            <h3>Recent Activity Logs</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Action</th>
+                        <th>IP Address</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (activities.length > 0) { %>
+                        <% activities.forEach(activity => { %>
+                            <tr>
+                                <td><%= activity.user_id %></td>
+                                <td><%= activity.action %></td>
+                                <td><%= activity.ip_address %></td>
+                                <td><%= activity.timestamp %></td>
+                            </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="4">No activity logs available.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Manage Users Section -->
+        <section id="manage-users">
+            <h3>Manage Users</h3>
+            <button onclick="document.getElementById('addUserModal').style.display='block'">Add User</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (users.length > 0) { %>
+                        <% users.forEach(user => { %>
+                            <tr>
+                                <td><%= user.id %></td>
+                                <td><%= user.username %></td>
+                                <td><%= user.email %></td>
+                                <td>
+                                    <a href="/admin/update-user/<%= user.id %>">Edit</a> |
+                                    <form action="/admin/delete-user/<%= user.id %>" method="POST" style="display:inline;">
+                                        <button type="submit">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="4">No users found.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Add User Modal -->
+        <div id="addUserModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="document.getElementById('addUserModal').style.display='none'">&times;</span>
+                <h2>Add New User</h2>
+                <form action="/admin/add-user" method="POST">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                    <button type="submit">Add User</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Reset Password Section -->
+        <section id="reset-password">
+            <h3>Reset User Password</h3>
+            <form action="/admin/reset-password" method="POST">
+                <label for="userId">User ID:</label>
+                <input type="text" id="userId" name="userId" required>
+                <label for="newPassword">New Password:</label>
+                <input type="password" id="newPassword" name="newPassword" required>
+                <button type="submit">Reset Password</button>
+            </form>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2024 Medical Solutions. All rights reserved.</p>
+        <p>&copy; 2024 Your Organization Name</p>
     </footer>
+
+    <script>
+        // Close modal if clicked outside
+        window.onclick = function(event) {
+            if (event.target.className === 'modal') {
+                document.getElementById('addUserModal').style.display = "none";
+            }
+        }
+    </script>
+
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
 </body>
 </html>
