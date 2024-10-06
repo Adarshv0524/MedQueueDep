@@ -1,0 +1,230 @@
+/* Reset some default browser styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+/* Heading styles */
+h1 {
+    font-size: 2.5rem;
+    text-align: center;
+    color: #4A90E2;
+    margin-bottom: 20px;
+    animation: fadeIn 1s;
+}
+
+/* Section styles */
+section {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 0 auto;
+    max-width: 600px;
+    transition: transform 0.3s ease;
+}
+
+/* User details heading */
+section h3 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 10px;
+    animation: slideIn 0.5s forwards;
+}
+
+/* Paragraph styles */
+p {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    animation: fadeIn 1s forwards;
+    opacity: 0;
+}
+
+/* Strong text styles */
+strong {
+    color: #4A90E2;
+}
+
+/* Link styles */
+a {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #4A90E2;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    animation: fadeIn 1s forwards;
+    opacity: 0;
+}
+
+/* Link hover effect */
+a:hover {
+    background-color: #357ABD;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    section {
+        padding: 15px;
+        max-width: 90%;
+    }
+
+    section h3 {
+        font-size: 1.6rem;
+    }
+
+    p {
+        font-size: 1rem;
+    }
+
+    a {
+        padding: 8px 16px;
+    }
+}
+
+/* Keyframes for animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Additional styles for user profile */
+#user-details {
+    position: relative;
+    overflow: hidden;
+}
+
+#user-details p {
+    position: relative;
+    animation: slideIn 0.5s forwards;
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+#user-details p:hover {
+    transform: scale(1.02);
+}
+
+/* Add some custom styles for better visual separation */
+section > h3::after {
+    content: '';
+    display: block;
+    width: 50%;
+    height: 2px;
+    background: #4A90E2;
+    margin: 10px auto 20px;
+}
+
+/* Animation delay for paragraph elements */
+#user-details p:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+#user-details p:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+#user-details p:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+#user-details p:nth-child(5) {
+    animation-delay: 0.4s;
+}
+
+#user-details p:nth-child(6) {
+    animation-delay: 0.5s;
+}
+
+/* Add a footer for additional links */
+footer {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Footer link styles */
+footer a {
+    color: #4A90E2;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+footer a:hover {
+    color: #357ABD;
+}
+
+/* Card effect for section */
+section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Animation for entering and leaving the page */
+body {
+    animation: pageLoad 1s forwards;
+}
+
+@keyframes pageLoad {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Dark mode styles */
+body.dark-mode {
+    background-color: #1a1a1a;
+    color: #f4f4f4;
+}
+
+body.dark-mode h1, 
+body.dark-mode section h3 {
+    color: #3B82F6;
+}
+
+body.dark-mode a {
+    background: #3B82F6;
+}
+
+body.dark-mode a:hover {
+    background: #2563EB;
+}

@@ -1,0 +1,318 @@
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Nunito', sans-serif;
+}
+
+body {
+    background-color: #f0f8ff;
+    color: #333;
+    line-height: 1.6;
+}
+
+h1, h2, h3 {
+    font-family: 'Baloo', cursive;
+    color: #ff6f61;
+    text-align: center;
+}
+
+header {
+    background-color: #ffccbc;
+    padding: 10px 0;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0;
+}
+
+nav ul {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+}
+
+nav ul li {
+    list-style: none;
+    margin: 0 15px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #ff7043;
+    font-size: 1.2rem;
+    padding: 5px 10px;
+    transition: all 0.3s ease;
+}
+
+nav ul li a:hover {
+    background-color: #ff6f61;
+    color: white;
+    border-radius: 20px;
+}
+
+/* Main Section */
+main {
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #ffa726;
+}
+
+/* Notification Area */
+#error, .success {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    animation: fadeIn 0.5s ease;
+}
+
+.error {
+    background-color: #ff5252;
+    color: white;
+}
+
+.success {
+    background-color: #81c784;
+    color: white;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Overview Section */
+#overview {
+    background-color: #ffecb3;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+#overview p {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+#overview h3 {
+    color: #ff7043;
+}
+
+/* Activity Logs Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+table th {
+    background-color: #ffab91;
+    color: white;
+}
+
+table tr:nth-child(even) {
+    background-color: #ffe0b2;
+}
+
+table tr:hover {
+    background-color: #ffcc80;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Manage Users Section */
+#manage-users {
+    background-color: #b3e5fc;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+#manage-users h3 {
+    color: #29b6f6;
+}
+
+#manage-users table {
+    margin-top: 20px;
+}
+
+#manage-users input[type="text"] {
+    padding: 10px;
+    width: 80%;
+    margin-bottom: 10px;
+    border: 2px solid #29b6f6;
+    border-radius: 5px;
+}
+
+#manage-users button {
+    background-color: #29b6f6;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#manage-users button:hover {
+    background-color: #0288d1;
+}
+
+/* Modal Styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.5s ease;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 50%;
+    animation: slideIn 0.5s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.close {
+    color: #ff6f61;
+    float: right;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #ff3d00;
+}
+
+/* Form Inputs */
+input[type="text"], input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 2px solid #ff7043;
+    border-radius: 5px;
+}
+
+button[type="submit"] {
+    background-color: #ff7043;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #f4511e;
+}
+
+/* Reset Password Section */
+#reset-password {
+    background-color: #c5e1a5;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+#reset-password h3 {
+    color: #8bc34a;
+}
+
+#reset-password form {
+    margin-top: 20px;
+}
+
+#reset-password input[type="text"], #reset-password input[type="password"] {
+    border: 2px solid #8bc34a;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    background-color: #ffccbc;
+    padding: 10px;
+    margin-top: 20px;
+    color: #ff7043;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2rem;
+    }
+
+    table th, table td {
+        padding: 8px;
+    }
+
+    .modal-content {
+        width: 80%;
+    }
+
+    nav ul {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    table th, table td {
+        font-size: 0.9rem;
+    }
+
+    #manage-users button {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .modal-content {
+        width: 90%;
+    }
+}

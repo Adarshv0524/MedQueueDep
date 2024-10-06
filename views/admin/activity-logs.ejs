@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update User</title>
+    <title>Activity logs</title>
+    <link rel="stylesheet" href="../css/admin/activity-logs.css">
 </head>
 <body>
     <h1>Update User</h1>
@@ -25,6 +26,53 @@
       <% }) %>
     </table>
     
+    <script>
+      // Dark Mode Toggle
+const toggleButton = document.createElement('button');
+toggleButton.classList.add('dark-mode-toggle');
+toggleButton.textContent = 'Toggle Dark Mode';
+document.body.appendChild(toggleButton);
+
+toggleButton.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+});
+
+// Show Error Message
+function showError(message) {
+    const errorDiv = document.createElement('div');
+    errorDiv.classList.add('error');
+    errorDiv.textContent = message;
+    document.body.prepend(errorDiv);
+    errorDiv.style.display = 'block';
+
+    // Hide error message after 5 seconds
+    setTimeout(() => {
+        errorDiv.style.display = 'none';
+    }, 5000);
+}
+
+// Example of showing an error (you can customize this)
+showError('An error occurred while updating the user. Please try again.');
+
+// Loading Spinner on Action
+const loadingSpinner = document.createElement('div');
+loadingSpinner.classList.add('loading-spinner');
+document.body.appendChild(loadingSpinner);
+
+// Simulate loading for user update
+function simulateUserUpdate() {
+    loadingSpinner.style.display = 'inline-block';
+    setTimeout(() => {
+        loadingSpinner.style.display = 'none';
+        // Simulate successful update
+        showError('User updated successfully!');
+    }, 2000); // Simulate a 2-second loading time
+}
+
+// Call this function when you want to simulate the update action
+simulateUserUpdate();
+
+    </script>
     
 </body>
 </html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update User</title>
+    <link rel="stylesheet" href="../css/admin/update-user.css"> <!-- Link to your CSS file -->
+</head>
+<body>
+    <div class="container">
+        <h1>Update User Information</h1>
+
+        <!-- Display error message with fade-in and auto-close animation -->
+        <% if (session.error) { %>
+            <div class="alert error" id="error-alert">
+                <%= session.error %>
+                <span class="close-btn" onclick="closeAlert('error-alert')">&times;</span>
+            </div>
+            <% session.error = null; // Clear the error after displaying %>
+        <% } %>
+
+        <!-- Display success message with fade-in and auto-close animation -->
+        <% if (session.successMessage) { %>
+            <div class="alert success" id="success-alert">
+                <%= session.successMessage %>
+                <span class="close-btn" onclick="closeAlert('success-alert')">&times;</span>
+            </div>
+            <% session.successMessage = null; // Clear the success message after displaying %>
+        <% } %>
+
+        <form action="/admin/update-user/<%= user.id %>" method="POST" id="updateForm">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" value="<%= user.username %>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" name="firstName" value="<%= profile.first_name %>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" name="lastName" value="<%= profile.last_name %>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="<%= profile.email %>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone:</label>
+                <input type="tel" id="phone" name="phone" value="<%= profile.phone %>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <textarea id="address" name="address" required><%= profile.address %></textarea>
+            </div>
+
+            <button type="submit" id="updateBtn">Update User</button>
+        </form>
+
+        <div class="form-navigation">
+            <a href="/admin/manage-users" class="back-link">← Back to Manage Users</a>
+        </div>
+    </div>
+
+    <script src="/script.js"></script> <!-- Link to your JavaScript file if needed -->
+</body>
+</html>

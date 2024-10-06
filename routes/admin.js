@@ -6,6 +6,13 @@ import { logUserActivity} from '../utils/activityLogger.js';
 
 const router = express.Router();
 
+import session from 'express-session';
+
+router.use(session({
+    secret: 'your-secret-key', // Replace with your secret key
+    resave: false,
+    saveUninitialized: true,
+}));
 
 
 
@@ -71,27 +78,28 @@ router.get('/admin', (req, res) => {
   // Admin dashboard route (GET)
   router.get('/admin/dashboard', isAdminAuthenticated, async (req, res) => {
     try {
-      const adminId = req.session.adminId;
-      
-      // Fetch admin profile information
-      const [adminProfile] = await db.query('SELECT * FROM admins WHERE id = ?', [adminId]);
-  
-      // Fetch recent activity logs for the admin
-      const [activities] = await db.query('SELECT * FROM activity_logs WHERE user_id = ? ORDER BY timestamp DESC', [adminId]);
-  
-      const [users] = await db.query('SELECT * FROM users');
-      
-      res.render('admin/admin', {
-        admin: adminProfile[0], // Pass admin profile data to the template
-        activities, // Pass admin activities to the template
-        users
-      });
+        const adminId = req.session.adminId;
+        const [adminProfile] = await db.query('SELECT * FROM admins WHERE id = ?', [adminId]);
+        const [activities] = await db.query('SELECT * FROM activity_logs WHERE user_id = ? ORDER BY timestamp DESC', [adminId]);
+        const [users] = await db.query('SELECT * FROM users');
+
+        // Pass the error variable to the template
+        const error = req.session.error || null;
+        req.session.error = null; // Clear error after use
+
+        res.render('admin/admin', {
+            admin: adminProfile[0],
+            activities,
+            users,
+            error // Include the error variable
+        });
     } catch (err) {
-      console.error(err);
-      res.status(500).send('Server error');
+        console.error(err);
+        req.session.error = 'Error fetching dashboard information'; // Set an error message for the dashboard
+        res.redirect('/admin'); // Redirect back to the admin login
     }
-  });
-  
+});
+
   
   
   // Additional admin functionalities routes
@@ -105,6 +113,22 @@ router.get('/admin', (req, res) => {
         res.status(500).send('Server error');
     }
   });
+
+  router.get('/admin/manage-users/search', isAdminAuthenticated, async (req, res) => {
+    const { query } = req.query;
+    try {
+        const searchQuery = `%${query}%`; // User pattern match for SQL
+        const [users] = await db.query(
+            'SELECT * FROM users WHERE username LIKE ? OR id LIKE ?',
+            [searchQuery, searchQuery]
+        );
+        res.render('admin/manage-users', { users });
+    } catch (err) {
+        console.error(err);
+        req.session.error = 'Error searching users';
+        res.redirect('/admin/manage-users');
+    }
+});
   
   // Functionality to delete a user (example)
   router.post('/admin/delete-user/:id', isAdminAuthenticated, async (req, res) => {
@@ -214,6 +238,31 @@ router.get('/admin', (req, res) => {
       res.redirect('/admin/manage-users');
     }
   })
+
+  // -------------------------------------------------------------------------
+// View User Profile Route (GET)
+// -------------------------------------------------------------------------
+
+// Route to view a user profile
+router.get('/admin/view-user/:id', isAdminAuthenticated, async (req, res) => {
+  const userId = req.params.id;
+  try {
+      const [user] = await db.query('SELECT * FROM users WHERE id = ?', [userId]);
+      const [profile] = await db.query('SELECT * FROM user_profiles WHERE user_id = ?', [userId]);
+
+      if (user.length === 0 || profile.length === 0) {
+          req.session.error = 'User not found';
+          return res.redirect('/admin/manage-users');
+      }
+
+      res.render('admin/view-user', { user: user[0], profile: profile[0] });
+  } catch (err) {
+      console.error(err);
+      req.session.error = 'Error fetching user profile';
+      res.redirect('/admin/manage-users');
+  }
+});
+
   
   
   

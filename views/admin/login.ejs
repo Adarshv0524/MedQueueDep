@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login</title>
-    <link rel="stylesheet" href="/stylesheets/style.css"> <!-- Add your CSS file -->
+    <link rel="stylesheet" href="../css/admin/login.css"> <!-- Add your CSS file -->
 </head>
 <body>
     <div class="container">
@@ -15,7 +15,6 @@
         <% } %>
 
         <form action="/admin" method="POST">
-            <h1>Admin Login</h1>
             <% if (error) { %>
               <p class="error"><%= error %></p>
             <% } %>
@@ -29,5 +28,62 @@
           </form>
           
     </div>
+    <script>
+        // Dark Mode Toggle
+const toggleButton = document.createElement('button');
+toggleButton.classList.add('dark-mode-toggle');
+toggleButton.textContent = 'Toggle Dark Mode';
+document.body.appendChild(toggleButton);
+
+toggleButton.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+});
+
+// Basic Form Validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    const username = document.querySelector('input[name="username"]');
+    const password = document.querySelector('input[name="password"]');
+    
+    let valid = true;
+
+    if (username.value.trim() === '') {
+        username.classList.add('invalid');
+        valid = false;
+    } else {
+        username.classList.remove('invalid');
+    }
+
+    if (password.value.trim() === '') {
+        password.classList.add('invalid');
+        valid = false;
+    } else {
+        password.classList.remove('invalid');
+    }
+
+    if (!valid) {
+        e.preventDefault();
+    }
+});
+
+// Loading Spinner on Form Submit
+const form = document.querySelector('form');
+const button = form.querySelector('button[type="submit"]');
+
+form.addEventListener('submit', function(e) {
+    const spinner = document.createElement('div');
+    spinner.classList.add('loading-spinner');
+    button.appendChild(spinner);
+    spinner.style.display = 'inline-block';
+});
+
+// Close error alerts after 5 seconds
+const alert = document.querySelector('.alert-danger');
+if (alert) {
+    setTimeout(() => {
+        alert.style.display = 'none';
+    }, 5000);
+}
+
+    </script>
 </body>
 </html>
